@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from UsuarioDAO import Usuario
+from FacultyDAO import Faculty
 users = Usuario()
+facul = Faculty()
 app = Flask(__name__)
 
 
@@ -62,7 +64,34 @@ def updateuser():
             return resp
     except Exception as e:
         print(e)
-#-----------------------metodos para usuario--------------------------#
+@app.route('/faculty/add', methods=['POST'])
+def AddFaculty():
+    try:
+        _json = request.json
+        facul.nombre=_json['name']
+        facul.director=_json['direct']
+        print(facul.director,facul.nombre)
+        if request.method=='POST':
+            resp=users.AddUsuario()
+            resp=jsonify('USUARIO')
+            resp.status_code=200
+        return resp
+    except Exception as e:
+        print(e)
+
+
+#---Faculty---#
+
+@app.route('/faculty/readAll', methods=['GET'])
+def FacultyReadAll():
+    try:
+        rows = facul.ReadAllFaculty()
+        respuesta = jsonify(rows)
+        respuesta.status_code = 200
+        return respuesta
+    except Exception as e:
+        print(e)
+
 
 if __name__ == "__main__":
 	app.run(host="localhost", port=5000, debug=True)
